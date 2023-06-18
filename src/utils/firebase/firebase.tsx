@@ -1,22 +1,23 @@
 import { initializeApp } from "firebase/app";
 import {
-  signOut,
+  createUserWithEmailAndPassword,
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
 } from "firebase/auth";
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
+import { IUser } from "../../context/user.context";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBjKa5CQYDM6aDjQMTqaBs2dm7VPu4Qslc",
-  authDomain: "shopping-app-e75e1.firebaseapp.com",
-  projectId: "shopping-app-e75e1",
-  storageBucket: "shopping-app-e75e1.appspot.com",
-  messagingSenderId: "112338573781",
-  appId: "1:112338573781:web:be0c7cbeb425e6d35b855c",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -29,16 +30,20 @@ provider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
-export const signInWithPassword = (email, password) =>
+export const signInWithPassword = (email: string, password: string) =>
   signInWithEmailAndPassword(auth, email, password);
+
 export const signOutUser = async () => signOut(auth);
 
-export const onAuthStateChangedListener = (callback) => {
+export const onAuthStateChangedListener = (
+  callback: (user: IUser | null) => void
+) => {
+  // @ts-ignore
   return onAuthStateChanged(auth, callback);
 };
 export const db = getFirestore();
 
-export const createUserDocFromAuth = async (userAuth) => {
+export const createUserDocFromAuth = async (userAuth: IUser) => {
   const userDocRef = doc(db, "users", userAuth.uid);
 
   const userSnapshot = await getDoc(userDocRef);
@@ -54,7 +59,7 @@ export const createUserDocFromAuth = async (userAuth) => {
         email,
         createdAt,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.log("error creating the user", error.message);
     }
   }
@@ -62,7 +67,10 @@ export const createUserDocFromAuth = async (userAuth) => {
   return userDocRef;
 };
 
-export const createAuthUserWithEmailAndPassword = async (email, password) => {
+export const createAuthUserWithEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
   if (!email || !password) return;
 
   return await createUserWithEmailAndPassword(auth, email, password);

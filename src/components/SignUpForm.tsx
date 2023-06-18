@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { createAuthUserWithEmailAndPassword } from "../../utils/firebase";
+import { createAuthUserWithEmailAndPassword } from "../utils/firebase/firebase";
 import { Link } from "react-router-dom";
+import { IUser } from "../context/user.context";
+
+interface SignUpFormProps {
+  onSignUpSuccess: (user: IUser | null) => void;
+}
 
 const defaultFormField = {
   email: "",
   password: "",
 };
-export default function SignUpForm({ onSignUpSuccess }) {
+export default function SignUpForm({ onSignUpSuccess }: SignUpFormProps) {
   const [formFields, setFormFields] = useState(defaultFormField);
 
   const { email, password } = formFields;
@@ -26,7 +31,9 @@ export default function SignUpForm({ onSignUpSuccess }) {
   //     setFormFields({...formFields, password: event.target.value})
   // }
 
-  const onSignUp = async (event) => {
+  const onSignUp = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
     try {
       const authUser = await createAuthUserWithEmailAndPassword(
@@ -38,7 +45,7 @@ export default function SignUpForm({ onSignUpSuccess }) {
 
       setFormFields(defaultFormField);
 
-      onSignUpSuccess(user);
+      onSignUpSuccess(user as unknown as IUser);
     } catch (error) {
       console.log("user creation encountered an error", error);
     }
@@ -101,7 +108,6 @@ export default function SignUpForm({ onSignUpSuccess }) {
                     to="/signin"
                     className="font-medium text-blue-600 hover:underline"
                   >
-                    {" "}
                     Login here
                   </Link>
                 </p>

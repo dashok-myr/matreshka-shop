@@ -1,40 +1,49 @@
 import {
   signInWithGooglePopup,
   signInWithPassword,
-} from "../../utils/firebase";
+} from "../utils/firebase/firebase";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
+import { IUser } from "../context/user.context";
 
 const defaultFormField = {
   email: "",
   password: "",
 };
 
-export default function SignIn({ onSignInSuccess }) {
+interface SignInProps {
+  onSignInSuccess: (user: IUser | null) => void;
+}
+
+export default function SignIn({ onSignInSuccess }: SignInProps) {
   const [formFields, setFormFields] = useState(defaultFormField);
   const { email, password } = formFields;
 
   const onInputFormHandle = (event: React.FormEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target as HTMLInputElement;
     setFormFields({ ...formFields, [name]: value });
   };
 
-  const onSignIn = async (event) => {
+  const onSignIn = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
     try {
       const userCredential = await signInWithPassword(email, password);
       setFormFields(defaultFormField);
-      onSignInSuccess(userCredential.user);
+      onSignInSuccess(userCredential.user as unknown as IUser);
     } catch (error) {
       console.log("user creation encountered an error", error);
     }
   };
 
-  const onGoogleSignIn = async (event) => {
+  const onGoogleSignIn = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
     try {
       const result = await signInWithGooglePopup();
-      onSignInSuccess(result.user);
+      onSignInSuccess(result.user as unknown as IUser);
     } catch (error) {
       console.log(error, "error");
     }
@@ -42,11 +51,11 @@ export default function SignIn({ onSignInSuccess }) {
 
   return (
     <>
-      <section className="bg-gray-50">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <section>
+        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:mt-16 lg:py-0">
           <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
+              <h1 className="text-xl font-bold leading-tight tracking-tight text-orange md:text-2xl">
                 Log In
               </h1>
               <form className="space-y-4 md:space-y-6" action="src/routers#">
@@ -89,7 +98,7 @@ export default function SignIn({ onSignInSuccess }) {
                     <button
                       onClick={onSignIn}
                       type="submit"
-                      className="w-full text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                      className="w-full text-white bg-orange hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                     >
                       Log In with Email
                     </button>
