@@ -47,12 +47,10 @@ export default function MobileMenu() {
               <Link to="/shop/womens" className="block">
                 Women
               </Link>
-              {user?.email && (
-                <Link to="/savedItems" className="block flex items-center	">
-                  Saved Items
-                  <img alt="heat" src={Heart} className="w-3 h-3 ml-1 pt-0.5" />
-                </Link>
-              )}
+              <Link to="/savedItems" className="block flex items-center	">
+                Saved Items
+                <img alt="heat" src={Heart} className="w-3 h-3 ml-1 pt-0.5" />
+              </Link>
               <span className="h-0.5 w-full bg-gray-200 mt-4"></span>
               {user?.email ? <SignOutButton /> : <SignInButton />}
             </div>

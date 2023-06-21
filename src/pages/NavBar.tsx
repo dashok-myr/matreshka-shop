@@ -77,15 +77,13 @@ export default function Navbar() {
             <Link to="/shop/womens" className="py-2 pr-8 block">
               Women
             </Link>
-            {user?.email && (
-              <Link
-                to="/savedItems"
-                className="py-2 pr-8 block flex items-center justify-center"
-              >
-                Saved Items
-                <img alt="heat" src={Heart} className="w-3 h-3 ml-1 pt-0.5" />
-              </Link>
-            )}
+            <Link
+              to="/savedItems"
+              className="py-2 pr-8 block flex items-center justify-center"
+            >
+              Saved Items
+              <img alt="heat" src={Heart} className="w-3 h-3 ml-1 pt-0.5" />
+            </Link>
           </div>
           {!isMobile && (user?.email ? <SignOutButton /> : <SignInButton />)}
           <div className="flex justify-center items-center pl-5">
